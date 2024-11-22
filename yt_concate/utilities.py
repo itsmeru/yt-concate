@@ -1,0 +1,46 @@
+import os
+import webvtt
+
+from setting import CAPTIONS_DIR, DOWNLOADS_DIR, VEDIOS_DIR
+
+class Utils:
+    def __init__(self):
+        pass
+
+    def create_dir(self):
+        os.makedirs(DOWNLOADS_DIR, exist_ok=True)
+        os.makedirs(VEDIOS_DIR, exist_ok=True)
+        os.makedirs(CAPTIONS_DIR, exist_ok=True)
+
+    @staticmethod
+    def convert_to_srt(vtt_file):
+        """下載並將 VTT 文件轉換為 SRT 格式的內容"""
+        try:
+            vtt = webvtt.read(vtt_file)
+            srt_lines = []
+            for i, caption in enumerate(vtt.captions, 1):
+                # 將時間格式從 VTT (xx.xxx) 轉換為 SRT (xx,xxx)
+                start = caption.start.replace('.', ',')
+                end = caption.end.replace('.', ',')
+                
+                srt_lines.append(f"{i}")
+                srt_lines.append(f"{start} --> {end}")
+                srt_lines.append(f"{caption.text}")
+                srt_lines.append("")
+            
+            return "\n".join(srt_lines)
+        except Exception as e:
+            print(f"轉換文件 {vtt_file} 時出錯: {str(e)}")
+            return None
+    
+    @staticmethod
+    def get_vedio_id_from_url(url):
+        return url.split("watch?v=")[-1]
+    
+    def get_caption_path(self, url):
+        return os.path.join(CAPTIONS_DIR, self.get_vedio_id_from_url(url) + '.srt')
+    
+    def caption_file_exist(self, url):
+        path = self.get_caption_path(url)
+        return os.path.exists(path) and os.path.getsize(path) > 0
+    

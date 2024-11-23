@@ -21,23 +21,31 @@ class Utils:
     
     @staticmethod
     def convert_to_srt(vtt_file):
-        """下載並將 VTT 文件轉換為 SRT 格式的內容"""
+        """Download VTT and turn into SRT content"""
         try:
             vtt = webvtt.read(vtt_file)
             srt_lines = []
-            for i, caption in enumerate(vtt.captions, 1):
-                # 將時間格式從 VTT (xx.xxx) 轉換為 SRT (xx,xxx)
+            srt_index = 1
+            last_text = ""
+            
+            for caption in vtt.captions:
                 start = caption.start.replace('.', ',')
                 end = caption.end.replace('.', ',')
                 
-                srt_lines.append(f"{i}")
-                srt_lines.append(f"{start} --> {end}")
-                srt_lines.append(f"{caption.text}")
-                srt_lines.append("")
+                texts = caption.text.split('\n')
+                current_text = texts[-1] if texts else ""
+                
+                if current_text != last_text and current_text.strip():
+                    srt_lines.append(f"{srt_index}")
+                    srt_lines.append(f"{start} --> {end}")
+                    srt_lines.append(current_text)
+                    srt_lines.append("")
+                    srt_index += 1
+                    last_text = current_text
             
             return "\n".join(srt_lines)
         except Exception as e:
-            print(f"轉換文件 {vtt_file} 時出錯: {str(e)}")
+            print(f"when turn file: {vtt_file} error: {str(e)}")
             return None
     
     @staticmethod
@@ -45,7 +53,7 @@ class Utils:
         return url.split("watch?v=")[-1]
     
     def get_caption_filepath(self, url):
-        return os.path.join(CAPTIONS_DIR, self.get_vedio_id_from_url(url) + '.srt')
+        return os.path.join(CAPTIONS_DIR, self.get_vedio_id_from_url(url) + '.txt')
     
     def caption_file_exist(self, url):
         path = self.get_caption_filepath(url)

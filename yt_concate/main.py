@@ -1,12 +1,12 @@
-from pipeline.pipeline import Pipeline
+from pipeline.steps.preflight import Preflight
 from pipeline.steps.get_vedio_list import GetVedioList
 from pipeline.steps.download_caption import DownloadCaptions
-from utils import Utils
-from pipeline.steps.preflight import Preflight
+from pipeline.steps.read_caption import ReadCaption
 from pipeline.steps.postflight import Postflight
+from pipeline.pipeline import Pipeline
+from utils import Utils
 
-
-CHANNEL_ID = "UCb-ikMqe9iS8GjG7WgGwCrQ"
+CHANNEL_ID = "UCsnZXdLOGBnezK--CiG7FZQ"
 
 def main():
     inputs = {
@@ -17,6 +17,7 @@ def main():
         Preflight(),
         GetVedioList(),
         DownloadCaptions(),
+        ReadCaption(),
         Postflight()
     ]
 

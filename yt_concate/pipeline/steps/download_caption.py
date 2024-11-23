@@ -22,24 +22,22 @@ class DownloadCaptions(Step):
             try:
                 with YoutubeDL(ydl_opts) as ydl:
                     ydl.extract_info(video_url, download=True)
-                    # 找出 VTT 文件
                     subtitle_files = [f for f in os.listdir() if f.endswith('.vtt')]                    
-                    
-                    # 讀取和轉換字幕
+                   
                     for vtt_file in subtitle_files:
-                        # 轉換為 SRT 格式
                         srt_content = utils.convert_to_srt(vtt_file)
                         if srt_content:
-                            # 保存 SRT 文件
                             srt_file = utils.get_caption_path(video_url)
                             with open(srt_file, 'w', encoding='utf-8') as f:
                                 f.write(srt_content)
-                            os.remove(vtt_file)
-                end = time.time()
+                        os.remove(vtt_file)
              
-            except Exception as e:
-                print(f'下載失敗: {str(e)}')
+            except (KeyError, AttributeError): # AttributeError cuz has no caption
+                print('Error when download caption url for', video_url)
+                continue
+
+            end = time.time()
             
-            print('download time: ', end - start)
+            print('download time: ', end - start, 'sec')
                        
  

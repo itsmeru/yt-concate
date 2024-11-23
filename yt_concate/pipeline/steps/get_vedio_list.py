@@ -3,13 +3,17 @@ import json
 import ssl
 
 from pipeline.steps.step import Step, StepException
-from setting import API_KEY
+from settings import API_KEY
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
 class GetVedioList(Step):
     def process(self, data, inputs, utils):
         channel_id = inputs['channel_id']
+
+        if utils.video_list_file_exist(channel_id):
+            return self.read_file(utils.get_video_list_filepath(channel_id))
+        
         base_video_url = 'https://www.youtube.com/watch?v='
         base_search_url = 'https://www.googleapis.com/youtube/v3/search?'
 
@@ -30,5 +34,17 @@ class GetVedioList(Step):
                 url = first_url + '&pageToken={}'.format(next_page_token)
             except KeyError:
                 break
-       
+        self.write_to_file(video_links, utils.get_video_list_filepath(channel_id))
         return video_links
+
+    def write_to_file(self, video_links, file_path):
+        with open(file_path, "w", encoding="utf-8") as f:
+            for url in video_links:
+                f.write(url + '\n')
+    
+    def read_file(self, file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            vedio_links = []
+            for url in f:
+                vedio_links.append(url.strip())
+        return vedio_links

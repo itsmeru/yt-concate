@@ -5,6 +5,7 @@ from pipeline.steps.download_caption import DownloadCaptions
 from pipeline.steps.read_caption import ReadCaption
 from pipeline.steps.search import Search
 from pipeline.steps.download_videos import DownloadVideos
+from pipeline.steps.edit_video import EditVedio
 from pipeline.steps.postflight import Postflight
 from pipeline.pipeline import Pipeline
 from utils import Utils
@@ -14,7 +15,8 @@ CHANNEL_ID = "UCdTDC0hc3EPLOwwiPp6i6xw"
 def main():
     inputs = {
         'channel_id': CHANNEL_ID,
-        'search_word': 'amazing'
+        'search_word': 'amazing',
+        'limit' : 20
     }
 
     steps = [
@@ -25,6 +27,7 @@ def main():
         ReadCaption(),
         Search(),
         DownloadVideos(),
+        EditVedio(),
         Postflight()
     ]
 

@@ -1,14 +1,16 @@
 import os
 
 from pipeline.steps.step import Step
-from settings import CAPTIONS_DIR
 
 class ReadCaption(Step):
     def process(self, data, inputs, utils):
-        data = {}
-        for caption_file in os.listdir(CAPTIONS_DIR):
+       
+        for yt in data:
+            if not utils.caption_file_exist(yt):
+                continue
+            
             captions = {}
-            with open(os.path.join(CAPTIONS_DIR, caption_file), "r", encoding="utf-8") as f:
+            with open(yt.caption_filepath, "r", encoding="utf-8") as f:
                 time_line = False
                 time = None
                 caption = None
@@ -22,6 +24,5 @@ class ReadCaption(Step):
                         caption = line
                         captions[caption] = time
                         time_line = False
-            data[caption_file] = captions
-        # print(data)
+            yt.captions = captions
         return data

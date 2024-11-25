@@ -4,16 +4,17 @@ from pipeline.steps.initialize_yt import InitializeYt
 from pipeline.steps.download_caption import DownloadCaptions
 from pipeline.steps.read_caption import ReadCaption
 from pipeline.steps.search import Search
+from pipeline.steps.download_videos import DownloadVideos
 from pipeline.steps.postflight import Postflight
 from pipeline.pipeline import Pipeline
 from utils import Utils
 
-CHANNEL_ID = "UCsnZXdLOGBnezK--CiG7FZQ"
+CHANNEL_ID = "UCdTDC0hc3EPLOwwiPp6i6xw"
 
 def main():
     inputs = {
         'channel_id': CHANNEL_ID,
-        'search_word': 'always exploring'
+        'search_word': 'amazing'
     }
 
     steps = [
@@ -23,6 +24,7 @@ def main():
         DownloadCaptions(),
         ReadCaption(),
         Search(),
+        DownloadVideos(),
         Postflight()
     ]
 

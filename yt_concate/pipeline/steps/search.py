@@ -15,7 +15,7 @@ class Search(Step):
                     time = captions[caption] # read_caption data structure
                     f = Found(yt, caption, time)
                     found.append(f)
-        print(len(found))
+       
         return found
                     
 
